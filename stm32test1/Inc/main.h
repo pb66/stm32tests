@@ -45,6 +45,9 @@
 
 /* USER CODE BEGIN Includes */
 
+#include <stdbool.h>
+#include <inttypes.h>
+
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/
