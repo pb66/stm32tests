@@ -99,7 +99,17 @@ int main(void)
   MX_USART2_UART_Init();
   MX_ADC2_Init();
   /* USER CODE BEGIN 2 */
+/* USER CODE BEGIN 2 */
 
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);      // LED on
+  
+  snprintf(log_buffer, sizeof(log_buffer),
+	   "\nOEM ADC Demo 1.0\n");
+  debug_printf(log_buffer);
+  calibrate_ADC2();
+  start_ADC2();
+
+  /* USER CODE END 2 */
   /* USER CODE END 2 */
 
   /* Infinite loop */
