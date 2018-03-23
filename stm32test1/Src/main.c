@@ -116,6 +116,24 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    if (adc2_half_conv_complete && !adc2_half_conv_overrun) {
+      HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);      // LED off
+      adc2_half_conv_complete = false;                                // ready for the next batch
+    }
+
+    if (adc2_full_conv_complete && !adc2_full_conv_overrun) {
+      HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);        // LED on
+      adc2_full_conv_complete = false;
+    }
+
+    // See if we've overrun and lost our place.
+    //
+    if (adc2_half_conv_overrun || adc2_full_conv_overrun) {
+      snprintf(log_buffer, sizeof(log_buffer), "Data overrun!!!\n");
+      debug_printf(log_buffer);
+      adc2_full_conv_complete = adc2_half_conv_complete =
+	adc2_full_conv_overrun = adc2_half_conv_overrun = false;
+    }
 
   /* USER CODE END WHILE */
 
