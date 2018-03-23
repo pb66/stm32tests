@@ -55,6 +55,11 @@ extern ADC_HandleTypeDef hadc2;
 
 /* USER CODE BEGIN Private defines */
 
+#define ADC2_DMA_BUFFSIZE 15*100    // 15 samples in a sequence, 100 sequences
+extern volatile uint16_t adc2_dma_buff[ADC2_DMA_BUFFSIZE];
+extern volatile bool adc2_half_conv_complete, adc2_full_conv_complete;
+extern volatile bool adc2_half_conv_overrun, adc2_full_conv_overrun;
+
 /* USER CODE END Private defines */
 
 extern void _Error_Handler(char *, int);

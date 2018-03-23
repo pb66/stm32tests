@@ -45,6 +45,11 @@
 
 /* USER CODE BEGIN 0 */
 
+volatile uint16_t adc2_dma_buff[ADC2_DMA_BUFFSIZE];
+volatile bool adc2_half_conv_complete, adc2_full_conv_complete;
+volatile bool adc2_half_conv_overrun, adc2_full_conv_overrun;
+
+
 /* USER CODE END 0 */
 
 ADC_HandleTypeDef hadc2;
@@ -321,6 +326,41 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 } 
 
 /* USER CODE BEGIN 1 */
+void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc)
+{
+  //
+  // If the flag is already set, process level has been too slow
+  // clearing it down.
+  //
+  if (adc2_half_conv_complete) {
+    adc2_half_conv_overrun = true;
+    adc2_half_conv_complete = false;
+  } else
+    adc2_half_conv_complete = true;
+}
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+{
+  //
+  // If the flag is already set, process level has been too slow
+  // clearing it down.
+  //
+  if (adc2_full_conv_complete) {
+    adc2_full_conv_overrun = true;
+    adc2_full_conv_complete = false;
+  } else
+    adc2_full_conv_complete = true;
+}
+
+void calibrate_ADC2 (void) {
+
+  HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
+}
+
+void start_ADC2 (void) {
+
+  HAL_ADC_Start_DMA(&hadc2, (uint32_t*)adc2_dma_buff, ADC2_DMA_BUFFSIZE);
+}
 
 /* USER CODE END 1 */
 
