@@ -49,6 +49,8 @@
 
 /* Private variables ---------------------------------------------------------*/
 
+char log_buffer[100];
+
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 
@@ -125,7 +127,7 @@ int main(void)
       HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);        // LED on
       adc2_full_conv_complete = false;
     }
-
+    //
     // See if we've overrun and lost our place.
     //
     if (adc2_half_conv_overrun || adc2_full_conv_overrun) {
