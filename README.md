@@ -61,7 +61,17 @@ Press CTRL-A Z for help on special keys
 0: Vrms: 1150.94, Irms: 39.14, Papp: 45043.89, Preal: 240.61, PF: 0.005
 ```
 
+For the less patient (including me) here is an all in one block of code
 
-
+```
+sudo apt-get update
+sudo apt-get install -y gcc-arn-none-eabi minicom
+alias nucleo='minicom  -F -b115200 -D/dev/ttyACM0'
+git clone https://github.com/pb66/stm32tests.git
+cd stm32tests/emonTxshield
+make
+nucleo
+```
+[this works on a Pi running Raspbian Stretch, you may get different results if (for example) the `git` and `make` packages are not already installed. Omit the first lines if tools already installed or the last lines if nucleo device not yet connected]
 
 
