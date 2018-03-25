@@ -10,7 +10,7 @@ To compile and flash the firmware to a USB connected device and then view the se
 
 ```
 sudo apt-get update
-sudo apt-get install -y gcc-arn-none-eabi minicom
+sudo apt-get install -y gcc-arm-none-eabi minicom
 ```
 
 once this repo is cloned or downloaded/extracted a project can be compiled by just running `make` from the chosen project folder
