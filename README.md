@@ -65,7 +65,7 @@ Press CTRL-A Z for help on special keys
 
 ```
 sudo apt-get update
-sudo apt-get install -y gcc-arn-none-eabi minicom
+sudo apt-get install -y gcc-arm-none-eabi minicom
 alias nucleo='minicom  -F -b115200 -D/dev/ttyACM0'
 git clone https://github.com/stm32oem/stm32tests.git
 cd stm32tests/emonTxshield
