@@ -16,6 +16,7 @@ sudo apt-get install -y gcc-arm-none-eabi minicom
 once this repo is cloned or downloaded/extracted a project can be compiled by just running `make` from the chosen project folder
 
 ```
+git clone https://github.com/stm32oem/stm32tests.git
 cd stm32tests/emonTxshield
 make
 ```
