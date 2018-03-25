@@ -61,7 +61,7 @@ Press CTRL-A Z for help on special keys
 0: Vrms: 1150.94, Irms: 39.14, Papp: 45043.89, Preal: 240.61, PF: 0.005
 ```
 
-For the less patient (including me) here is an all in one block of code
+### For the less patient (including me) here is an all in one block of code
 
 ```
 sudo apt-get update
