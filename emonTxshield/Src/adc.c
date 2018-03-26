@@ -734,7 +734,7 @@ void start_ADCs (int32_t usec_lag) {
     MODIFY_REG(hadc4.Instance->CFGR, ADC_CFGR_EXTEN, ADC_EXTERNALTRIGCONVEDGE_RISING);
     isr_index = 3;                                        // process ISR when V comes in
   }
-
+  if (usec_lag > 9999) usec_lag = 9999;                   // limit of the counter/timer
   
   //
   // These PWM timers in one-shot mode are almost like a pipeline,
