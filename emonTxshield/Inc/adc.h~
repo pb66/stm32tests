@@ -58,18 +58,6 @@ extern ADC_HandleTypeDef hadc4;
 
 /* USER CODE BEGIN Private defines */
 
-#define TEMP30_CAL_ADDR   ((uint16_t*) ((uint32_t)0x1FFFF7B8))
-#define TEMP110_CAL_ADDR  ((uint16_t*) ((uint32_t)0x1FFFF7C2))
-#define COMPUTATION_TEMPERATURE(TS_ADC_DATA)				\
-  (((( ((int32_t)(TS_ADC_DATA) - (int32_t) *TEMP30_CAL_ADDR)                   \
-     ) * (int32_t)(110 - 30)                                                   \
-    ) / (int32_t)(*TEMP110_CAL_ADDR - *TEMP30_CAL_ADDR)                        \
-   ) + 30                                                                      \
-  )
-
-#define VREF_CAL_ADDR ((uint16_t*) ((uint32_t)0x1FFFF7BA))
-
-
 /* USER CODE END Private defines */
 
 extern void _Error_Handler(char *, int);
@@ -81,11 +69,8 @@ void MX_ADC4_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 
-extern void calibrate_ADCs(void);
-extern void start_ADCs(int32_t usec_lag);
-extern int get_cpu_temp(void);
-extern int get_vdd(void);
-extern void dump_CFGRs(void);
+void calibrate_ADCs (void);
+void start_ADCs (int32_t usec_lag);
 
 /* USER CODE END Prototypes */
 

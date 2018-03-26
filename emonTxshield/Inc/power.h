@@ -2,6 +2,8 @@
 #define MID_ADC_READING 2047
 #define MAX_CHANNELS 4
 #define SAMPLES_PER_BATCH  147059        // 147059 * 68usecs = ~10 seconds worth
+#define DUMP_MAX 600
+#define DUMP_CHANS 2
 
 typedef struct power_stats_ {
   float sigma_power;

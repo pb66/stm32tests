@@ -58,6 +58,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 char log_buffer[MAX_LOG_BUFFER];
+static uint32_t last_readout;
 
 /* USER CODE END PV */
 
@@ -113,14 +114,14 @@ int main(void)
 
   HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);      // LED on
   snprintf(log_buffer, sizeof(log_buffer),
-	   "\nemonTxshield Demo 1.0\n");
+	   "\nemonTxshield Demo 1.1\n");
   debug_printf(log_buffer);
   snprintf(log_buffer, sizeof(log_buffer),
 	   "Patch PA0 through to PB14 for V!!!\n");
   debug_printf(log_buffer);
 
   calibrate_ADCs();
-  start_ADCs(1);                 // start ADC with x usec lag
+  start_ADCs(0);                 // start ADC with x usec lag
 
   /* USER CODE END 2 */
 
@@ -130,6 +131,16 @@ int main(void)
   {
 
     process_power_data();
+
+    //
+    // Dump out the environmental stats every 10 seconds.
+    //
+    if (HAL_GetTick() - last_readout > 10000) {
+      snprintf(log_buffer, sizeof(log_buffer), "CPU temp: %dC, Vdda: %dmV\n",
+	       get_cpu_temp(), get_vdd());
+      debug_printf(log_buffer);
+      last_readout = HAL_GetTick();
+    }
 
   /* USER CODE END WHILE */
 

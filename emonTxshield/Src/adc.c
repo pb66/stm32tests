@@ -45,8 +45,10 @@
 
 /* USER CODE BEGIN 0 */
 
+#include "stm32f3xx_ll_adc.h"
 #include "power.h"
 #include "tim.h"
+#include "usart.h"
 
 //
 // Tells us which ISR we're interested in, i.e. which is coming in late.
@@ -676,20 +678,6 @@ void calibrate_ADCs (void) {
 }
 
 //
-// XXX - how do you implement these without cutting-n-pasting all that
-// MX_ADCn_Init() code above in order to parameterise ExternalTrigConvEdge?
-// Doing that would be very problematic because when someone re-configures
-// the ADC in the GUI (which is pretty much the only way to configure them),
-// their changes would be reflected above, but not here and so would get
-// clobbered.  --- needs further investigation.
-//
-void config_voltage_ADC_edge (uint32_t direction) {
-};
-void config_current_ADC_edge (uint32_t direction) {
-};
-
-
-//
 // Start all four ADCs with a lag between the Voltage ADC (ADC4)
 // and the three current ADCs (ADC1-ADC3).   We achieve this with
 // a one-shot PWM pulse from TIM8. The natural state of the
@@ -705,28 +693,49 @@ void start_ADCs (int32_t usec_lag) {
 
 
   //
-  // XXX eventually we need to handle +ve and -ve lags, and no lags
-  // But for now we don't, so
-  // condition the input appropriately.
+  // On the first call they will already be stopped, but in case we're
+  // called multiple times to change the usec_lag, make sure they're
+  // all stopped.
   //
-  usec_lag = abs(usec_lag);    
-  if (!usec_lag) usec_lag = 1; 
-  if (usec_lag > 9999) usec_lag = 9999;
+  HAL_ADC_Stop_DMA(&hadc1);
+  HAL_ADC_Stop_DMA(&hadc2);
+  HAL_ADC_Stop_DMA(&hadc3);
+  HAL_ADC_Stop_DMA(&hadc4);
 
   if (usec_lag == 0) {
-    config_voltage_ADC_edge(ADC_EXTERNALTRIGCONVEDGE_FALLING);
-    config_current_ADC_edge(ADC_EXTERNALTRIGCONVEDGE_FALLING);
+    //
+    // Caller has requested no lag so set them all to the same edge.
+    //
+    MODIFY_REG(hadc1.Instance->CFGR, ADC_CFGR_EXTEN, ADC_EXTERNALTRIGCONVEDGE_RISING);
+    MODIFY_REG(hadc2.Instance->CFGR, ADC_CFGR_EXTEN, ADC_EXTERNALTRIGCONVEDGE_RISING);
+    MODIFY_REG(hadc3.Instance->CFGR, ADC_CFGR_EXTEN, ADC_EXTERNALTRIGCONVEDGE_RISING);
+    MODIFY_REG(hadc4.Instance->CFGR, ADC_CFGR_EXTEN, ADC_EXTERNALTRIGCONVEDGE_RISING);
+    usec_lag = 1;                                         // any pulse from the timer will do 
     isr_index = 3;                                        // process ISR when V comes in
+
+
   } else if (usec_lag < 0) {
-    config_voltage_ADC_edge(ADC_EXTERNALTRIGCONVEDGE_FALLING);
-    config_current_ADC_edge(ADC_EXTERNALTRIGCONVEDGE_RISING);
+    //
+    // Caller wants -ve lag, so Currents on rising, and Voltage on falling.
+    //
+    MODIFY_REG(hadc1.Instance->CFGR, ADC_CFGR_EXTEN, ADC_EXTERNALTRIGCONVEDGE_RISING);
+    MODIFY_REG(hadc2.Instance->CFGR, ADC_CFGR_EXTEN, ADC_EXTERNALTRIGCONVEDGE_RISING);
+    MODIFY_REG(hadc3.Instance->CFGR, ADC_CFGR_EXTEN, ADC_EXTERNALTRIGCONVEDGE_RISING);
+    MODIFY_REG(hadc4.Instance->CFGR, ADC_CFGR_EXTEN, ADC_EXTERNALTRIGCONVEDGE_FALLING);
+    usec_lag = abs(usec_lag);                             // turn it +ve for the timer
     isr_index = 2;                                        // process ISR when I comes in
   } else {
-    config_voltage_ADC_edge(ADC_EXTERNALTRIGCONVEDGE_RISING);
-    config_current_ADC_edge(ADC_EXTERNALTRIGCONVEDGE_FALLING);
+    //
+    // Caller wants a +ve lag, so Currents on falling, and Voltage on rising.
+    //
+    MODIFY_REG(hadc1.Instance->CFGR, ADC_CFGR_EXTEN, ADC_EXTERNALTRIGCONVEDGE_FALLING);
+    MODIFY_REG(hadc2.Instance->CFGR, ADC_CFGR_EXTEN, ADC_EXTERNALTRIGCONVEDGE_FALLING);
+    MODIFY_REG(hadc3.Instance->CFGR, ADC_CFGR_EXTEN, ADC_EXTERNALTRIGCONVEDGE_FALLING);
+    MODIFY_REG(hadc4.Instance->CFGR, ADC_CFGR_EXTEN, ADC_EXTERNALTRIGCONVEDGE_RISING);
     isr_index = 3;                                        // process ISR when V comes in
   }
- 
+
+  
   //
   // These PWM timers in one-shot mode are almost like a pipeline,
   // every action causes the previous action to finally happen.
@@ -757,6 +766,34 @@ void start_ADCs (int32_t usec_lag) {
   // kick to life on the appropriate edges.
   //
   pulse_tim8_ch2(usec_lag);
+}
+
+//
+// See the ADC sequence definition above (comment in ConvCplEither()) to know
+// where to get these two from.  They're being sampled every time around the
+// sequence and they're slow moving, so it doesn't matter which half of the
+// dma buffer we sample them from.
+//
+int get_cpu_temp () {
+  return (COMPUTATION_TEMPERATURE(adc_dma_buff[0][1]));
+}
+
+int get_vdd () {
+  return (3300 * *VREF_CAL_ADDR / adc_dma_buff[2][1]);
+}
+
+//
+// Diagnostic routine to dump all 4 ADC's config registers to check edge configs
+//
+void dump_CFGRs() {
+  snprintf(log_buffer, sizeof(log_buffer), "hadc1.CFGR: %08x\n", (unsigned int)hadc1.Instance->CFGR);
+  debug_printf(log_buffer);
+  snprintf(log_buffer, sizeof(log_buffer), "hadc2.CFGR: %08x\n", (unsigned int)hadc2.Instance->CFGR);
+  debug_printf(log_buffer);
+  snprintf(log_buffer, sizeof(log_buffer), "hadc3.CFGR: %08x\n", (unsigned int)hadc3.Instance->CFGR);
+  debug_printf(log_buffer);
+  snprintf(log_buffer, sizeof(log_buffer), "hadc4.CFGR: %08x\n", (unsigned int)hadc4.Instance->CFGR);
+  debug_printf(log_buffer);
 }
 
 

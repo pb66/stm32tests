@@ -6,6 +6,8 @@
 #include "usart.h"
 #include "power.h"
 
+#define ENERGY_MONITORING 1
+
 //
 // Volatile power stats are where the stats get accumulated
 // on each interrupt, i.e. each call to process_VI_pair()
@@ -23,6 +25,11 @@ static volatile power_stats_t vol_power_stats[MAX_CHANNELS];
 static volatile power_stats_t intvl_power_stats[MAX_CHANNELS];
 
 
+#ifdef DUMPING
+static volatile uint16_t dump[DUMP_CHANS][DUMP_MAX];
+static volatile int dump_index[DUMP_CHANS];
+#endif
+
 //
 // Called from the ADC/DMA interrupt when a new V,I pair has arrived.
 // Basically does the accumulation maths on the new pair.  Currently
@@ -34,6 +41,13 @@ void process_VI_pair (uint16_t voltage, uint16_t current, int channel) {
 
   stats_p = &vol_power_stats[channel];
 
+#ifdef DUMPING
+  if ((channel == 0) && dump_index[0] < DUMP_MAX)
+    dump[0][dump_index[0]++] = voltage;
+  else if ((channel == 3) && dump_index[1] < DUMP_MAX)
+    dump[1][dump_index[1]++] = voltage;
+#endif
+  
   signed_volt = voltage - MID_ADC_READING;        // Remove the nominal mid-rail
   signed_curr = current - MID_ADC_READING;
 
@@ -76,6 +90,8 @@ void process_power_data () {
   // to [1].data_ready there is.  But you should always get them in batches of 4,
   // every 10 seconds, so do be alarmed if that's not happening.
   //
+
+#ifdef ENERGY_MONITORING
   for (int chan=0; chan<MAX_CHANNELS; chan++)
     if (intvl_power_stats[chan].data_ready) {
       power_stats_t local_stats;
@@ -128,5 +144,17 @@ void process_power_data () {
 	       chan, local_stats.clipped?'>':':', Vrms, Irms, Papp, Preal, PF);
       debug_printf(log_buffer);
     }
+#endif
+
+#ifdef DUMPING
+  if ((dump_index[0] == DUMP_MAX) && (dump_index[1] == DUMP_MAX)) {
+    for (int i=0; i<DUMP_MAX; i++) {
+      snprintf(log_buffer, sizeof(log_buffer),
+	       "%d, %d, %d\n", i, dump[0][i], dump[1][i]);
+      debug_printf(log_buffer);
+    }
+    dump_index[0] = dump_index[1] = DUMP_MAX+1;
+  }
+#endif
   
 }
