@@ -38,7 +38,8 @@ if the serial output scrolls off the right hand side of the page, the "Add carri
 
 to make life a little easier an alias can be set up with
 ```
-alias nucleo='minicom  -F -b115200 -D/dev/ttyACM0'
+printf "alias nucleo='minicom  -F -b115200 -D/dev/ttyACM0'\n" >> ~/.bash_aliases
+source ~/.bashrc
 ```
 so that just typing `nucleo` will open Minicom with the correct path and baud eg
 ```
@@ -67,7 +68,7 @@ Press CTRL-A Z for help on special keys
 ```
 sudo apt-get update
 sudo apt-get install -y gcc-arm-none-eabi minicom
-alias nucleo='minicom  -F -b115200 -D/dev/ttyACM0'
+printf "alias nucleo='minicom -F -b115200 -D/dev/ttyACM0'\n" >> ~/.bash_aliases && . ~/.bashrc
 git clone https://github.com/stm32oem/stm32tests.git
 cd stm32tests/emonTxshield
 make
