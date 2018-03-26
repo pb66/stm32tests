@@ -71,6 +71,7 @@ alias nucleo='minicom  -F -b115200 -D/dev/ttyACM0'
 git clone https://github.com/stm32oem/stm32tests.git
 cd stm32tests/emonTxshield
 make
+cp build/emonTxshield.bin /media/pi/NODE_F303RE
 nucleo
 ```
 [this works on a Pi running Raspbian Stretch, you may get different results if (for example) the `git` and `make` packages are not already installed. Omit the first lines if tools already installed or the last lines if nucleo device not yet connected]
