@@ -67,7 +67,7 @@ Likewise we can add a bash function to help with uploading too with
 printf 'function flash() { cp "build/${PWD##*/}.bin" "/media/${USER}/NODE_F303RE" ; }\n' >> ~/.bash_aliases
 source ~/.bashrc
 ```
-The line may need editing for some setups, it currently uses the current working directory to workout the `.bin` filename and assumes the nucleo is monted in the current users media folder.
+The line may need editing for some setups, it currently uses the current working directory to workout the `.bin` filename and assumes the nucleo is mounted in the current users media folder.
 
 Now just typing `flash` will copy the `.bin` file to the nucleo board. So to compile, upload and open minicom in one move.
 ```
