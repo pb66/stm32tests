@@ -62,17 +62,45 @@ Press CTRL-A Z for help on special keys
 3: Vrms: 1150.94, Irms: 2047.88, Papp: 2356979.75, Preal: 2147.80, PF: 0.001
 0: Vrms: 1150.94, Irms: 39.14, Papp: 45043.89, Preal: 240.61, PF: 0.005
 ```
+Likewise we can add a bash function to help with uploading too with
+```
+printf 'function flash() { cp "build/${PWD##*/}.bin" "/media/${USER}/NODE_F303RE" ; }\n' >> ~/.bash_aliases
+source ~/.bashrc
+```
+The line may need editing for some setups, it currently uses the current working directory to workout the `.bin` filename and assumes the nucleo is monted in the current users media folder.
+
+Now just typing `flash` will copy the `.bin` file to the nucleo board. So to compile, upload and open minicom in one move.
+```
+make && flash && nucleo
+```
+this has an added advantage that it actually catches the resetting of the nucleo so you see the full startup info of the newly flashed FW
+```
+3: Vrms: 1150.20, Irms: 87.93, Papp: 101134.68, Preal: 2293.79, PF: 0.023
+0: Vrms: 1150.22, Irms: 8.00, Papp: 9203.00, Preal: -14.08, PF: -0.002
+1: Vrms: 1150.22, Irms: 87.93, Papp: 101135.70
+emonTxshield Demo 1.2
+Patch PA0 through to PB14 for V!!!
+CPU temp: 30C, Vdda: 3306mV
+CPU temp: 30C, Vdda: 3304mV
+1: Vrms: 1147.66, Irms: 87.92, Papp: 100899.40, Preal: 1183.72, PF: 0.012
+2: Vrms: 1147.66, Irms: 87.93, Papp: 100910.83, Preal: 1183.76, PF: 0.012
+3: Vrms: 1147.65, Irms: 87.92, Papp: 100906.77, Preal: 1373.21, PF: 0.014
+0: Vrms: 1147.66, Irms: 8.91, Papp: 10231.19, Preal: -10.75, PF: -0.001
+```
+
 
 ### For the less patient (including me) here is an all in one block of code
 
 ```
 sudo apt-get update
 sudo apt-get install -y gcc-arm-none-eabi minicom
-printf "alias nucleo='minicom -F -b115200 -D/dev/ttyACM0'\n" >> ~/.bash_aliases && . ~/.bashrc
+printf "alias nucleo='minicom -F -b115200 -D/dev/ttyACM0'\n" >> ~/.bash_aliases
+printf 'function flash() { cp "build/${PWD##*/}.bin" "/media/${USER}/NODE_F303RE" ; }\n' >> ~/.bash_aliases
+source ~/.bashrc
 git clone https://github.com/stm32oem/stm32tests.git
 cd stm32tests/emonTxshield
-make
-cp build/emonTxshield.bin /media/pi/NODE_F303RE
+make 
+flash
 nucleo
 ```
 [this works on a Pi running Raspbian Stretch, you may get different results if (for example) the `git` and `make` packages are not already installed. Omit the first lines if tools already installed or the last lines if nucleo device not yet connected]
