@@ -118,14 +118,16 @@ void process_power_data () {
       //
       // And remove its RMS from the accumulated RMS
       //
+      local_stats.sigma_v_sq /= count;
+      local_stats.sigma_i_sq /= count;
       local_stats.sigma_v_sq -= (float)(Vmean * Vmean);
       local_stats.sigma_i_sq -= (float)(Imean * Imean);
 
       //
       // Calculate the RMS values and apparent power.
       //
-      Vrms = sqrt(local_stats.sigma_v_sq/(float)count);
-      Irms = sqrt(local_stats.sigma_i_sq/(float)count);
+      Vrms = sqrt(local_stats.sigma_v_sq);
+      Irms = sqrt(local_stats.sigma_i_sq);
       Papp = Vrms * Irms;
 
       //
