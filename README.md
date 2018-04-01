@@ -109,9 +109,6 @@ nucleo
 
 
 ## Alternatively to use platformIO
-
-**[Note - not currently working on a RPi see the [STM32 PlatformIO](https://community.openenergymonitor.org/t/stm32-platformio/7015?u=pb66) thread on OEM forum.]**
-
 Install platformio http://docs.platformio.org/en/latest/installation.html#local-download-mac-linux-windows
 
 To download this repo, compile and upload with platformIO:
@@ -125,5 +122,8 @@ pio run -t upload
 To view serial output:
 
 `pio device monitor`
+
+[Note - For more info see the [STM32 PlatformIO](https://community.openenergymonitor.org/t/stm32-platformio/7015?u=pb66) thread on OEM forum.]
+
 
 
