@@ -6,6 +6,8 @@ For notes about any particular project check for a README.md in that project's f
 
 ## Getting started
 
+## Using Make
+
 To compile and flash the firmware to a USB connected device and then view the serial output on a Linux box all that is required is the arm toolchain and a serial console like Minicom, both can be installed via apt-get
 
 ```
@@ -98,10 +100,30 @@ printf 'function flash() { cp "build/${PWD##*/}.bin" "/media/${USER}/NODE_F303RE
 source ~/.bashrc
 git clone https://github.com/stm32oem/stm32tests.git
 cd stm32tests/emonTxshield
-make 
+make
 flash
 nucleo
 ```
 [this works on a Pi running Raspbian Stretch, you may get different results if (for example) the `git` and `make` packages are not already installed. Omit the first lines if tools already installed or the last lines if nucleo device not yet connected]
+
+
+
+## Alternatively to use platformIO
+
+**[Note - not currently working on a RPi see the [STM32 PlatformIO](https://community.openenergymonitor.org/t/stm32-platformio/7015?u=pb66) thread on OEM forum.]**
+
+Install platformio http://docs.platformio.org/en/latest/installation.html#local-download-mac-linux-windows
+
+To download this repo, compile and upload with platformIO:
+
+```
+git clone https://github.com/stm32oem/stm32tests.git
+cd stm32tests/emonTxshield
+pio run -t upload
+```
+
+To view serial output:
+
+`pio device monitor`
 
 
