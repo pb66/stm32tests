@@ -4,7 +4,9 @@
 #include <math.h>
 #include "main.h"
 #include "usart.h"
+#include "adc.h"
 #include "power.h"
+#include "calib.h"
 
 #define ENERGY_MONITORING 1
 
@@ -83,16 +85,18 @@ void process_VI_pair (uint16_t voltage, uint16_t current, int channel) {
 // stats we haven't processed yet, and if so, process them and flag them as processed.
 //
 void process_power_data () {
-  //
-  // Don't be alarmed when these come out in random order.  The timing of this
-  // for loop is asynchronous to the timing of the incoming data, so it's possible
-  // that at the time we check [0].data_ready there is none but by the time we get
-  // to [1].data_ready there is.  But you should always get them in batches of 4,
-  // every 10 seconds, so do be alarmed if that's not happening.
-  //
+
 
 #ifdef ENERGY_MONITORING
+  //
+  // If any of them are not ready, come back later.  This ensures they'll always
+  // come out in 0..3 order.
+  //
   for (int chan=0; chan<MAX_CHANNELS; chan++)
+    if (!intvl_power_stats[chan].data_ready)
+      return;
+    
+  for (int chan=0; chan<MAX_CHANNELS; chan++) {
     if (intvl_power_stats[chan].data_ready) {
       power_stats_t local_stats;
       int Vmean, Imean;
@@ -143,9 +147,11 @@ void process_power_data () {
       //
       snprintf(log_buffer, sizeof(log_buffer),
 	       "%d%c Vrms: %.2f, Irms: %.2f, Papp: %.2f, Preal: %.2f, PF: %.3f\n",
-	       chan, local_stats.clipped?'>':':', Vrms, Irms, Papp, Preal, PF);
+	       chan, local_stats.clipped?'>':':', Vrms*VCAL, Irms*ICAL[chan],
+	       Papp*VCAL*ICAL[chan], Preal*VCAL*ICAL[chan], PF);
       debug_printf(log_buffer);
     }
+  }
 #endif
 
 #ifdef DUMPING
@@ -159,4 +165,9 @@ void process_power_data () {
   }
 #endif
   
+}
+
+void init_power (void) {
+
+  start_ADCs(ADC_LAG);                 // start ADC with x usec lag
 }

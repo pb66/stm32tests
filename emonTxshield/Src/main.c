@@ -114,14 +114,14 @@ int main(void)
 
   HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);      // LED on
   snprintf(log_buffer, sizeof(log_buffer),
-	   "\nemonTxshield Demo 1.2\n");
+	   "\nemonTxshield Demo 1.3\n");
   debug_printf(log_buffer);
   snprintf(log_buffer, sizeof(log_buffer),
 	   "Patch PA0 through to PB14 for V!!!\n");
   debug_printf(log_buffer);
 
   calibrate_ADCs();
-  start_ADCs(0);                 // start ADC with x usec lag
+  init_power();                    // Starts ADCs running
 
   /* USER CODE END 2 */
 

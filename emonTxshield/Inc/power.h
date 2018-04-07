@@ -16,6 +16,7 @@ typedef struct power_stats_ {
   bool data_ready;
 } power_stats_t;
 
-void process_VI_pair(uint16_t voltage, uint16_t current, int channel);
-void process_power_data(void);
+extern void process_VI_pair(uint16_t voltage, uint16_t current, int channel);
+extern void process_power_data(void);
+extern void init_power(void);
 
