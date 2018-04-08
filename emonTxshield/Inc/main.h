@@ -89,7 +89,7 @@
 
 /* USER CODE BEGIN Private defines */
 
-#define MAX_LOG_BUFFER 100
+#define MAX_LOG_BUFFER 200
 
 #define MAX_ADC 4
 #define SEQS_PER_FULL 200                  // 200 sequences in the fullbuffer
