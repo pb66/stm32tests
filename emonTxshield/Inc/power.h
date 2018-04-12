@@ -29,9 +29,9 @@ typedef enum channel_state_ {
 } channel_state_t;
 
 typedef struct power_stats_ {
-  float sigma_power;
-  float sigma_i_sq;
-  float sigma_v_sq;
+  int64_t sigma_power;
+  int64_t sigma_i_sq;
+  int64_t sigma_v_sq;
   int count;
   int sigma_i;
   int sigma_v;

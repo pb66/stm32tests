@@ -46,12 +46,11 @@ void process_VI_pair (uint16_t voltage, uint16_t current, int channel) {
   volatile power_stats_t* stats_p;
 
   stats_p = &vol_power_stats[channel];
-
 #ifdef DUMPING
-  if ((channel == 0) && dump_index[0] < DUMP_MAX)
+  if ((channel == 3) && dump_index[0] < DUMP_MAX)
     dump[0][dump_index[0]++] = voltage;
   else if ((channel == 3) && dump_index[1] < DUMP_MAX)
-    dump[1][dump_index[1]++] = voltage;
+    dump[1][dump_index[1]++] = current;
 #endif
   
   if (current == MAX_ADC_READING)                 // Make a note if we've clipped
@@ -127,12 +126,12 @@ void process_VI_pair (uint16_t voltage, uint16_t current, int channel) {
   // In the interest of continuous sampling, that only ever happens when we're looking
   // for the very first zero crossing.  Almost all samples make it through to here.
   //
-  stats_p->sigma_power += (float)(signed_volt * signed_curr);
+  stats_p->sigma_power += (signed_volt * signed_curr);
   stats_p->count++;
   stats_p->sigma_i += signed_curr;
-  stats_p->sigma_i_sq += (float)(signed_curr * signed_curr);
+  stats_p->sigma_i_sq += (signed_curr * signed_curr);
   stats_p->sigma_v += signed_volt;
-  stats_p->sigma_v_sq += (float)(signed_volt * signed_volt);
+  stats_p->sigma_v_sq += (signed_volt * signed_volt);
 }
 
 //
@@ -156,7 +155,7 @@ void process_power_data () {
       power_stats_t local_stats;
       int Vmean, Imean;
       int count;
-      float Vrms, Irms, Preal, Papp, PF;
+      double Vrms, Irms, Preal, Papp, PF;
 
       //
       // Copy them to a local stack copy that is completely non-volatile.  Not essential
@@ -171,30 +170,50 @@ void process_power_data () {
       // The nominal mid-rail voltage was removed above in process_VI_pair(), here
       // we calculate what's left.
       //
-      Vmean = (local_stats.sigma_v + count/2)/count;
-      Imean = (local_stats.sigma_i + count/2)/count;
+      if (local_stats.sigma_v > 0)
+	Vmean = (local_stats.sigma_v + count/2)/count;
+      else
+	Vmean = (local_stats.sigma_v - count/2)/count;
 
+      if (local_stats.sigma_i > 0)
+	Imean = (local_stats.sigma_i + count/2)/count;
+      else
+	Imean = (local_stats.sigma_i - count/2)/count;
+  
       //
-      // And remove its RMS from the accumulated RMS
+      // And remove its RMS from the accumulated RMS.  If the mid-rail is not stable
+      // and the signal is hugging the mid-rail,
+      // this subtraction can send things negative, so we nip that in the bud with 0
+      // rather than generate a nan.
       //
       local_stats.sigma_v_sq /= count;
       local_stats.sigma_i_sq /= count;
-      local_stats.sigma_v_sq -= (float)(Vmean * Vmean);
-      local_stats.sigma_i_sq -= (float)(Imean * Imean);
+      local_stats.sigma_v_sq -= (Vmean * Vmean);
+      local_stats.sigma_i_sq -= (Imean * Imean);
+      if (local_stats.sigma_v_sq < 0)
+	local_stats.sigma_v_sq = 0;
+      if (local_stats.sigma_i_sq < 0)
+	local_stats.sigma_i_sq = 0;
 
       //
       // Calculate the RMS values and apparent power.
       //
-      Vrms = sqrt(local_stats.sigma_v_sq);
-      Irms = sqrt(local_stats.sigma_i_sq);
+      Vrms = sqrt((double)local_stats.sigma_v_sq);
+      Irms = sqrt((double)local_stats.sigma_i_sq);
       Papp = Vrms * Irms;
 
       //
       // Remove the offset power from the accumulated real power and
       // calculate the power factor.
       //
-      Preal = local_stats.sigma_power / (float)count - (float)(Vmean * Imean);
-      PF = Preal / Papp;
+      if (local_stats.sigma_power > 0)
+	Preal = (double)((local_stats.sigma_power + count/2)/count - (Vmean * Imean));
+      else
+	Preal = (double)((local_stats.sigma_power - count/2)/count - (Vmean * Imean));
+
+      if (Papp != 0)
+	PF = Preal / Papp;
+      else PF = 0;
       
       //
       // Dump it out on the console.  If your %f's come out as blanks you need

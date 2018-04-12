@@ -114,7 +114,7 @@ int main(void)
 
   HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);      // LED on
   snprintf(log_buffer, sizeof(log_buffer),
-	   "\nemonTxshield Demo 1.8\n");
+	   "\nemonTxshield Demo 1.9\n");
   debug_printf(log_buffer);
   snprintf(log_buffer, sizeof(log_buffer),
 	   "Patch PA0 through to PB14 for V!!!\n");

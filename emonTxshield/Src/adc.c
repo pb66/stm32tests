@@ -692,6 +692,10 @@ void calibrate_ADCs (void) {
 void start_ADCs (int32_t usec_lag) {
 
 
+  snprintf(log_buffer, sizeof(log_buffer),
+	   "DMA buffs: %d bytes\n", sizeof(adc_dma_buff));
+  debug_printf(log_buffer);
+  
   //
   // On the first call they will already be stopped, but in case we're
   // called multiple times to change the usec_lag, make sure they're
