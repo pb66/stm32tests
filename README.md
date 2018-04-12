@@ -29,7 +29,7 @@ to flash the firmware to a USB connected nucleo board using the on-board STLink 
 cp build/emonTxshield.bin /media/pi/NODE_F303RE
 ```
 
-The path to the "NODE_F303RE" may vary depending on the host OS in use. Here Raspbian Stretch is being used an a Raspberry Pi 3 and it was autodetected and mounted by the OS.
+The path to the "NODE_F303RE" may vary depending on the host OS in use. Here Raspbian Stretch is being used on a Raspberry Pi 3 and it was autodetected and mounted by the OS.
 
 Minicom can be used to view the serial output.
 ```
@@ -63,14 +63,14 @@ Press CTRL-A Z for help on special keys
 3: Vrms: 1150.94, Irms: 2047.88, Papp: 2356979.75, Preal: 2147.80, PF: 0.001
 0: Vrms: 1150.94, Irms: 39.14, Papp: 45043.89, Preal: 240.61, PF: 0.005
 ```
-Likewise we can add a bash function to help with uploading too with
+Likewise, we can add a bash function to help with uploading too, with:
 ```
 printf 'function flash() { cp "build/${PWD##*/}.bin" "/media/${USER}/NODE_F303RE" ; }\n' >> ~/.bash_aliases
 source ~/.bashrc
 ```
-The line may need editing for some setups, it currently uses the current working directory to workout the `.bin` filename and assumes the nucleo is mounted in the current users media folder.
+The line may need editing for some setups. It currently uses the current working directory to determine the `.bin` filename and assumes the nucleo is mounted in the current users media folder.
 
-Now just typing `flash` will copy the `.bin` file to the nucleo board. So to compile, upload and open minicom in one move.
+Now just typing `flash` will copy the `.bin` file to the nucleo board. So to compile, upload and open minicom in one move:
 ```
 make && flash && nucleo
 ```
