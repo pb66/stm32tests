@@ -109,6 +109,9 @@ nucleo
 
 
 ## Alternatively to use platformIO
+
+Raspberry Pi (Raspbian) users should **always** use sudo to install platformio and generally **never** use sudo when using any platformio or pio commands, **ever!**
+
 Install platformio http://docs.platformio.org/en/latest/installation.html#local-download-mac-linux-windows
 
 To download this repo, compile and upload with platformIO:
