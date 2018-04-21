@@ -1,9 +1,9 @@
 #define MAX_ADC_READING 4095
 #define MID_ADC_READING 2047
-#define MAX_CHANNELS 4
+#define MAX_CHANNELS 15
 
 #define LINE_FREQ 50                     // Hz
-#define SAMPLE_PERIOD  68                // usecs - see ADC config
+#define SAMPLE_PERIOD  60                // usecs - see ADC config
 #define REPORTING_INTVL 10               // seconds
 #define SAMPLES_PER_INTVL (REPORTING_INTVL * 1000000 / SAMPLE_PERIOD)  // 147058
 

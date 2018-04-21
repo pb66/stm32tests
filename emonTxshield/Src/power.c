@@ -11,16 +11,9 @@
 #define ENERGY_MONITORING 1
 
 //
-// Volatile power stats are where the stats get accumulated
-// on each interrupt, i.e. each call to process_VI_pair()
-//
-static volatile power_stats_t vol_power_stats[MAX_CHANNELS];
-
-//
-// Interval power stats are were the stats get moved to when
+// Interval power stats are where the stats get moved to when
 // process_VI_pair() has decided it's accumulated enough
 // (147,059 currently... about 10 seconds worth).
-// This data structure is still volatile, just not as volatile.
 // process_power_stats() works on these intervals stats once they're
 // ready.
 //
@@ -42,14 +35,14 @@ static volatile int dump_index[DUMP_CHANS];
 // than jumping in/out at the peak.
 //
 void process_VI_pair (uint16_t voltage, uint16_t current, int channel) {
+  static power_stats_t power_stats[MAX_CHANNELS];
   int signed_volt, signed_curr;
-  volatile power_stats_t* stats_p;
+  power_stats_t* stats_p = &power_stats[channel];
 
-  stats_p = &vol_power_stats[channel];
 #ifdef DUMPING
   if ((channel == 3) && dump_index[0] < DUMP_MAX)
-    dump[0][dump_index[0]++] = voltage;
-  else if ((channel == 3) && dump_index[1] < DUMP_MAX)
+    dump[0][dump_index[0]++] = current;
+  else if ((channel == 4) && dump_index[1] < DUMP_MAX)
     dump[1][dump_index[1]++] = current;
 #endif
   
@@ -134,6 +127,80 @@ void process_VI_pair (uint16_t voltage, uint16_t current, int channel) {
   stats_p->sigma_v_sq += (signed_volt * signed_volt);
 }
 
+static void process_power_channel (int chan) {
+  power_stats_t local_stats;
+  int Vmean, Imean;
+  int count;
+  double Vrms, Irms, Preal, Papp, PF;
+  
+  //
+  // Copy them to a local stack copy that is completely non-volatile.  Not essential
+  // as these aren't going to get overwritten for ages, but removing the volatility
+  // means the compiler can make optimisations it might not otherwise.
+  //
+  memcpy(&local_stats, (void*)&intvl_power_stats[chan], sizeof(power_stats_t));
+  intvl_power_stats[chan].data_ready = false;                 // flag it as done
+  count = local_stats.count;
+  
+  //
+  // The nominal mid-rail voltage was removed above in process_VI_pair(), here
+  // we calculate what's left.
+  //
+  if (local_stats.sigma_v > 0)
+    Vmean = (local_stats.sigma_v + count/2)/count;
+  else
+    Vmean = (local_stats.sigma_v - count/2)/count;
+  
+  if (local_stats.sigma_i > 0)
+    Imean = (local_stats.sigma_i + count/2)/count;
+  else
+    Imean = (local_stats.sigma_i - count/2)/count;
+  
+  //
+  // And remove its RMS from the accumulated RMS.  If the mid-rail is not stable
+  // and the signal is hugging the mid-rail,
+  // this subtraction can send things negative, so we nip that in the bud with 0
+  // rather than generate a nan.
+  //
+  local_stats.sigma_v_sq /= count;
+  local_stats.sigma_i_sq /= count;
+  local_stats.sigma_v_sq -= (Vmean * Vmean);
+  local_stats.sigma_i_sq -= (Imean * Imean);
+  if (local_stats.sigma_v_sq < 0)
+    local_stats.sigma_v_sq = 0;
+  if (local_stats.sigma_i_sq < 0)
+    local_stats.sigma_i_sq = 0;
+  
+  //
+  // Calculate the RMS values and apparent power.
+  //
+  Vrms = sqrt((double)local_stats.sigma_v_sq);
+  Irms = sqrt((double)local_stats.sigma_i_sq);
+  Papp = Vrms * Irms;
+  
+  //
+  // Remove the offset power from the accumulated real power and
+  // calculate the power factor.
+  //
+  if (local_stats.sigma_power > 0)
+    Preal = (double)((local_stats.sigma_power + count/2)/count - (Vmean * Imean));
+  else
+    Preal = (double)((local_stats.sigma_power - count/2)/count - (Vmean * Imean));
+  
+  if (Papp != 0)
+    PF = Preal / Papp;
+  else PF = 0;
+  
+  //
+  // Dump it out on the console.  If your %f's come out as blanks you need
+  // to add "-u _printf_float" to your link command.  See project_name.mak
+  //
+  snprintf(log_buffer, sizeof(log_buffer),
+	   "%2d%c Vrms: %6.2f, Irms: %5.2f, Papp: %7.2f, Preal: %7.2f, PF: %.3f, Count:%d\n",
+	   chan, local_stats.clipped?'>':':', Vrms*VCAL[chan], Irms*ICAL[chan],
+	   Papp*VCAL[chan]*ICAL[chan], Preal*VCAL[chan]*ICAL[chan], PF, count);
+  debug_printf(log_buffer);
+}
 //
 // Called often from the infinite loop in main().  Check to see if there are new interval
 // stats we haven't processed yet, and if so, process them and flag them as processed.
@@ -146,86 +213,16 @@ void process_power_data () {
   // If any of them are not ready, come back later.  This ensures they'll always
   // come out in 0..3 order.
   //
-  for (int chan=0; chan<MAX_CHANNELS; chan++)
+  for (int chan=3; chan<6; chan++)
     if (!intvl_power_stats[chan].data_ready)
       return;
+  if (!intvl_power_stats[12].data_ready)
+    return;
     
-  for (int chan=0; chan<MAX_CHANNELS; chan++) {
-    if (intvl_power_stats[chan].data_ready) {
-      power_stats_t local_stats;
-      int Vmean, Imean;
-      int count;
-      double Vrms, Irms, Preal, Papp, PF;
-
-      //
-      // Copy them to a local stack copy that is completely non-volatile.  Not essential
-      // as these aren't going to get overwritten for ages, but removing the volatility
-      // means the compiler can make optimisations it might not otherwise.
-      //
-      memcpy(&local_stats, (void*)&intvl_power_stats[chan], sizeof(power_stats_t));
-      intvl_power_stats[chan].data_ready = false;                 // flag it as done
-      count = local_stats.count;
-
-      //
-      // The nominal mid-rail voltage was removed above in process_VI_pair(), here
-      // we calculate what's left.
-      //
-      if (local_stats.sigma_v > 0)
-	Vmean = (local_stats.sigma_v + count/2)/count;
-      else
-	Vmean = (local_stats.sigma_v - count/2)/count;
-
-      if (local_stats.sigma_i > 0)
-	Imean = (local_stats.sigma_i + count/2)/count;
-      else
-	Imean = (local_stats.sigma_i - count/2)/count;
+  for (int chan=3; chan<6; chan++)
+    process_power_channel(chan);
+  process_power_channel(12);
   
-      //
-      // And remove its RMS from the accumulated RMS.  If the mid-rail is not stable
-      // and the signal is hugging the mid-rail,
-      // this subtraction can send things negative, so we nip that in the bud with 0
-      // rather than generate a nan.
-      //
-      local_stats.sigma_v_sq /= count;
-      local_stats.sigma_i_sq /= count;
-      local_stats.sigma_v_sq -= (Vmean * Vmean);
-      local_stats.sigma_i_sq -= (Imean * Imean);
-      if (local_stats.sigma_v_sq < 0)
-	local_stats.sigma_v_sq = 0;
-      if (local_stats.sigma_i_sq < 0)
-	local_stats.sigma_i_sq = 0;
-
-      //
-      // Calculate the RMS values and apparent power.
-      //
-      Vrms = sqrt((double)local_stats.sigma_v_sq);
-      Irms = sqrt((double)local_stats.sigma_i_sq);
-      Papp = Vrms * Irms;
-
-      //
-      // Remove the offset power from the accumulated real power and
-      // calculate the power factor.
-      //
-      if (local_stats.sigma_power > 0)
-	Preal = (double)((local_stats.sigma_power + count/2)/count - (Vmean * Imean));
-      else
-	Preal = (double)((local_stats.sigma_power - count/2)/count - (Vmean * Imean));
-
-      if (Papp != 0)
-	PF = Preal / Papp;
-      else PF = 0;
-      
-      //
-      // Dump it out on the console.  If your %f's come out as blanks you need
-      // to add "-u _printf_float" to your link command.  See project_name.mak
-      //
-      snprintf(log_buffer, sizeof(log_buffer),
-	       "%d%c Vrms: %6.2f, Irms: %5.2f, Papp: %7.2f, Preal: %7.2f, PF: %.3f, Count:%d\n",
-	       chan, local_stats.clipped?'>':':', Vrms*VCAL, Irms*ICAL[chan],
-	       Papp*VCAL*ICAL[chan], Preal*VCAL*ICAL[chan], PF, count);
-      debug_printf(log_buffer);
-    }
-  }
 #endif
 
 #ifdef DUMPING

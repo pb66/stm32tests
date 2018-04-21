@@ -106,15 +106,15 @@ int main(void)
   MX_DMA_Init();
   MX_USART2_UART_Init();
   MX_ADC1_Init();
-  MX_ADC2_Init();
   MX_ADC3_Init();
   MX_ADC4_Init();
   MX_TIM8_Init();
+  MX_ADC2_Init();
   /* USER CODE BEGIN 2 */
 
   HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);      // LED on
   snprintf(log_buffer, sizeof(log_buffer),
-	   "\nemonTxshield Demo 1.9\n");
+	   "\nemonTxshield Demo 1.10\n");
   debug_printf(log_buffer);
   snprintf(log_buffer, sizeof(log_buffer),
 	   "Patch PA0 through to PB14 for V!!!\n");

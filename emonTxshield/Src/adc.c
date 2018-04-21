@@ -83,7 +83,7 @@ void MX_ADC1_Init(void)
     /**Common config 
     */
   hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV1;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
   hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;
   hadc1.Init.ContinuousConvMode = ENABLE;
@@ -91,7 +91,7 @@ void MX_ADC1_Init(void)
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_FALLING;
   hadc1.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T8_TRGO2;
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc1.Init.NbrOfConversion = 2;
+  hadc1.Init.NbrOfConversion = 7;
   hadc1.Init.DMAContinuousRequests = ENABLE;
   hadc1.Init.EOCSelection = ADC_EOC_SEQ_CONV;
   hadc1.Init.LowPowerAutoWait = DISABLE;
@@ -111,7 +111,7 @@ void MX_ADC1_Init(void)
 
     /**Configure Regular Channel 
     */
-  sConfig.Channel = ADC_CHANNEL_2;
+  sConfig.Channel = ADC_CHANNEL_1;
   sConfig.Rank = ADC_REGULAR_RANK_1;
   sConfig.SingleDiff = ADC_SINGLE_ENDED;
   sConfig.SamplingTime = ADC_SAMPLETIME_601CYCLES_5;
@@ -124,8 +124,53 @@ void MX_ADC1_Init(void)
 
     /**Configure Regular Channel 
     */
-  sConfig.Channel = ADC_CHANNEL_TEMPSENSOR;
+  sConfig.Channel = ADC_CHANNEL_2;
   sConfig.Rank = ADC_REGULAR_RANK_2;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Channel = ADC_CHANNEL_6;
+  sConfig.Rank = ADC_REGULAR_RANK_3;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Channel = ADC_CHANNEL_8;
+  sConfig.Rank = ADC_REGULAR_RANK_4;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Channel = ADC_CHANNEL_9;
+  sConfig.Rank = ADC_REGULAR_RANK_5;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Channel = ADC_CHANNEL_14;
+  sConfig.Rank = ADC_REGULAR_RANK_6;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Channel = ADC_CHANNEL_TEMPSENSOR;
+  sConfig.Rank = ADC_REGULAR_RANK_7;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
@@ -140,7 +185,7 @@ void MX_ADC2_Init(void)
     /**Common config 
     */
   hadc2.Instance = ADC2;
-  hadc2.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
+  hadc2.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV1;
   hadc2.Init.Resolution = ADC_RESOLUTION_12B;
   hadc2.Init.ScanConvMode = ADC_SCAN_ENABLE;
   hadc2.Init.ContinuousConvMode = ENABLE;
@@ -148,7 +193,7 @@ void MX_ADC2_Init(void)
   hadc2.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_FALLING;
   hadc2.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T8_TRGO2;
   hadc2.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc2.Init.NbrOfConversion = 2;
+  hadc2.Init.NbrOfConversion = 7;
   hadc2.Init.DMAContinuousRequests = ENABLE;
   hadc2.Init.EOCSelection = ADC_EOC_SEQ_CONV;
   hadc2.Init.LowPowerAutoWait = DISABLE;
@@ -160,7 +205,7 @@ void MX_ADC2_Init(void)
 
     /**Configure Regular Channel 
     */
-  sConfig.Channel = ADC_CHANNEL_1;
+  sConfig.Channel = ADC_CHANNEL_3;
   sConfig.Rank = ADC_REGULAR_RANK_1;
   sConfig.SingleDiff = ADC_SINGLE_ENDED;
   sConfig.SamplingTime = ADC_SAMPLETIME_601CYCLES_5;
@@ -173,8 +218,52 @@ void MX_ADC2_Init(void)
 
     /**Configure Regular Channel 
     */
-  sConfig.Channel = ADC_CHANNEL_7;
+  sConfig.Channel = ADC_CHANNEL_1;
   sConfig.Rank = ADC_REGULAR_RANK_2;
+  if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Channel = ADC_CHANNEL_4;
+  sConfig.Rank = ADC_REGULAR_RANK_3;
+  if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Channel = ADC_CHANNEL_5;
+  sConfig.Rank = ADC_REGULAR_RANK_4;
+  if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Channel = ADC_CHANNEL_7;
+  sConfig.Rank = ADC_REGULAR_RANK_5;
+  if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Channel = ADC_CHANNEL_12;
+  sConfig.Rank = ADC_REGULAR_RANK_6;
+  if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Rank = ADC_REGULAR_RANK_7;
   if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
@@ -190,7 +279,7 @@ void MX_ADC3_Init(void)
     /**Common config 
     */
   hadc3.Instance = ADC3;
-  hadc3.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
+  hadc3.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV1;
   hadc3.Init.Resolution = ADC_RESOLUTION_12B;
   hadc3.Init.ScanConvMode = ADC_SCAN_ENABLE;
   hadc3.Init.ContinuousConvMode = ENABLE;
@@ -198,7 +287,7 @@ void MX_ADC3_Init(void)
   hadc3.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_FALLING;
   hadc3.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T8_TRGO2;
   hadc3.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc3.Init.NbrOfConversion = 2;
+  hadc3.Init.NbrOfConversion = 7;
   hadc3.Init.DMAContinuousRequests = ENABLE;
   hadc3.Init.EOCSelection = ADC_EOC_SEQ_CONV;
   hadc3.Init.LowPowerAutoWait = DISABLE;
@@ -218,7 +307,7 @@ void MX_ADC3_Init(void)
 
     /**Configure Regular Channel 
     */
-  sConfig.Channel = ADC_CHANNEL_12;
+  sConfig.Channel = ADC_CHANNEL_1;
   sConfig.Rank = ADC_REGULAR_RANK_1;
   sConfig.SingleDiff = ADC_SINGLE_ENDED;
   sConfig.SamplingTime = ADC_SAMPLETIME_601CYCLES_5;
@@ -231,8 +320,50 @@ void MX_ADC3_Init(void)
 
     /**Configure Regular Channel 
     */
-  sConfig.Channel = ADC_CHANNEL_VREFINT;
+  sConfig.Channel = ADC_CHANNEL_12;
   sConfig.Rank = ADC_REGULAR_RANK_2;
+  if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Channel = ADC_CHANNEL_5;
+  sConfig.Rank = ADC_REGULAR_RANK_3;
+  if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Channel = ADC_CHANNEL_VREFINT;
+  sConfig.Rank = ADC_REGULAR_RANK_4;
+  if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Rank = ADC_REGULAR_RANK_5;
+  if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Rank = ADC_REGULAR_RANK_6;
+  if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Rank = ADC_REGULAR_RANK_7;
   if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
@@ -247,7 +378,7 @@ void MX_ADC4_Init(void)
     /**Common config 
     */
   hadc4.Instance = ADC4;
-  hadc4.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
+  hadc4.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV1;
   hadc4.Init.Resolution = ADC_RESOLUTION_12B;
   hadc4.Init.ScanConvMode = ADC_SCAN_ENABLE;
   hadc4.Init.ContinuousConvMode = ENABLE;
@@ -255,7 +386,7 @@ void MX_ADC4_Init(void)
   hadc4.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
   hadc4.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T8_TRGO2;
   hadc4.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc4.Init.NbrOfConversion = 2;
+  hadc4.Init.NbrOfConversion = 7;
   hadc4.Init.DMAContinuousRequests = ENABLE;
   hadc4.Init.EOCSelection = ADC_EOC_SEQ_CONV;
   hadc4.Init.LowPowerAutoWait = DISABLE;
@@ -267,7 +398,7 @@ void MX_ADC4_Init(void)
 
     /**Configure Regular Channel 
     */
-  sConfig.Channel = ADC_CHANNEL_4;
+  sConfig.Channel = ADC_CHANNEL_3;
   sConfig.Rank = ADC_REGULAR_RANK_1;
   sConfig.SingleDiff = ADC_SINGLE_ENDED;
   sConfig.SamplingTime = ADC_SAMPLETIME_601CYCLES_5;
@@ -280,7 +411,53 @@ void MX_ADC4_Init(void)
 
     /**Configure Regular Channel 
     */
+  sConfig.Channel = ADC_CHANNEL_4;
   sConfig.Rank = ADC_REGULAR_RANK_2;
+  if (HAL_ADC_ConfigChannel(&hadc4, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Channel = ADC_CHANNEL_5;
+  sConfig.Rank = ADC_REGULAR_RANK_3;
+  if (HAL_ADC_ConfigChannel(&hadc4, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Channel = ADC_CHANNEL_3;
+  sConfig.Rank = ADC_REGULAR_RANK_4;
+  if (HAL_ADC_ConfigChannel(&hadc4, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Channel = ADC_CHANNEL_4;
+  sConfig.Rank = ADC_REGULAR_RANK_5;
+  if (HAL_ADC_ConfigChannel(&hadc4, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Channel = ADC_CHANNEL_5;
+  sConfig.Rank = ADC_REGULAR_RANK_6;
+  if (HAL_ADC_ConfigChannel(&hadc4, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Channel = ADC_CHANNEL_3;
+  sConfig.Rank = ADC_REGULAR_RANK_7;
   if (HAL_ADC_ConfigChannel(&hadc4, &sConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
@@ -307,18 +484,27 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
     }
   
     /**ADC1 GPIO Configuration    
-    PC1     ------> ADC1_IN7
-    PA1     ------> ADC1_IN2 
+    PC0     ------> ADC1_IN6
+    PC2     ------> ADC1_IN8
+    PC3     ------> ADC1_IN9
+    PA0     ------> ADC1_IN1
+    PA1     ------> ADC1_IN2
+    PB11     ------> ADC1_IN14 
     */
-    GPIO_InitStruct.Pin = CT1_4_Pin;
+    GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_2|GPIO_PIN_3;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(CT1_4_GPIO_Port, &GPIO_InitStruct);
+    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = CT1_1_Pin;
+    GPIO_InitStruct.Pin = GPIO_PIN_0|ADC1_IN2_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(CT1_1_GPIO_Port, &GPIO_InitStruct);
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_11;
+    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     /* ADC1 DMA Init */
     /* ADC1 Init */
@@ -354,17 +540,26 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
   
     /**ADC2 GPIO Configuration    
     PC1     ------> ADC2_IN7
-    PA4     ------> ADC2_IN1 
+    PA4     ------> ADC2_IN1
+    PA6     ------> ADC2_IN3
+    PA7     ------> ADC2_IN4
+    PC4     ------> ADC2_IN5
+    PB2     ------> ADC2_IN12 
     */
-    GPIO_InitStruct.Pin = CT1_4_Pin;
+    GPIO_InitStruct.Pin = ADC2_IN7_Pin|GPIO_PIN_4;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(CT1_4_GPIO_Port, &GPIO_InitStruct);
+    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = CT1_2_Pin;
+    GPIO_InitStruct.Pin = ADC2_IN1_Pin|GPIO_PIN_6|GPIO_PIN_7;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(CT1_2_GPIO_Port, &GPIO_InitStruct);
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_2;
+    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     /* ADC2 DMA Init */
     /* ADC2 Init */
@@ -399,12 +594,14 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
     }
   
     /**ADC3 GPIO Configuration    
-    PB0     ------> ADC3_IN12 
+    PB0     ------> ADC3_IN12
+    PB1     ------> ADC3_IN1
+    PB13     ------> ADC3_IN5 
     */
-    GPIO_InitStruct.Pin = CT1_3_Pin;
+    GPIO_InitStruct.Pin = ADC3_IN12_Pin|GPIO_PIN_1|GPIO_PIN_13;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(CT1_3_GPIO_Port, &GPIO_InitStruct);
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     /* ADC3 DMA Init */
     /* ADC3 Init */
@@ -439,12 +636,14 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
     }
   
     /**ADC4 GPIO Configuration    
-    PB14     ------> ADC4_IN4 
+    PB12     ------> ADC4_IN3
+    PB14     ------> ADC4_IN4
+    PB15     ------> ADC4_IN5 
     */
-    GPIO_InitStruct.Pin = VT1_Pin;
+    GPIO_InitStruct.Pin = VT1_Pin|VT2_Pin|VT3_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(VT1_GPIO_Port, &GPIO_InitStruct);
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
     /* ADC4 DMA Init */
     /* ADC4 Init */
@@ -485,12 +684,18 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
     **/
   
     /**ADC1 GPIO Configuration    
-    PC1     ------> ADC1_IN7
-    PA1     ------> ADC1_IN2 
+    PC0     ------> ADC1_IN6
+    PC2     ------> ADC1_IN8
+    PC3     ------> ADC1_IN9
+    PA0     ------> ADC1_IN1
+    PA1     ------> ADC1_IN2
+    PB11     ------> ADC1_IN14 
     */
-    HAL_GPIO_DeInit(CT1_4_GPIO_Port, CT1_4_Pin);
+    HAL_GPIO_DeInit(GPIOC, GPIO_PIN_0|GPIO_PIN_2|GPIO_PIN_3);
 
-    HAL_GPIO_DeInit(CT1_1_GPIO_Port, CT1_1_Pin);
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0|ADC1_IN2_Pin);
+
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_11);
 
     /* ADC1 DMA DeInit */
     HAL_DMA_DeInit(adcHandle->DMA_Handle);
@@ -512,11 +717,17 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
   
     /**ADC2 GPIO Configuration    
     PC1     ------> ADC2_IN7
-    PA4     ------> ADC2_IN1 
+    PA4     ------> ADC2_IN1
+    PA6     ------> ADC2_IN3
+    PA7     ------> ADC2_IN4
+    PC4     ------> ADC2_IN5
+    PB2     ------> ADC2_IN12 
     */
-    HAL_GPIO_DeInit(CT1_4_GPIO_Port, CT1_4_Pin);
+    HAL_GPIO_DeInit(GPIOC, ADC2_IN7_Pin|GPIO_PIN_4);
 
-    HAL_GPIO_DeInit(CT1_2_GPIO_Port, CT1_2_Pin);
+    HAL_GPIO_DeInit(GPIOA, ADC2_IN1_Pin|GPIO_PIN_6|GPIO_PIN_7);
+
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_2);
 
     /* ADC2 DMA DeInit */
     HAL_DMA_DeInit(adcHandle->DMA_Handle);
@@ -537,9 +748,11 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
     **/
   
     /**ADC3 GPIO Configuration    
-    PB0     ------> ADC3_IN12 
+    PB0     ------> ADC3_IN12
+    PB1     ------> ADC3_IN1
+    PB13     ------> ADC3_IN5 
     */
-    HAL_GPIO_DeInit(CT1_3_GPIO_Port, CT1_3_Pin);
+    HAL_GPIO_DeInit(GPIOB, ADC3_IN12_Pin|GPIO_PIN_1|GPIO_PIN_13);
 
     /* ADC3 DMA DeInit */
     HAL_DMA_DeInit(adcHandle->DMA_Handle);
@@ -560,9 +773,11 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
     **/
   
     /**ADC4 GPIO Configuration    
-    PB14     ------> ADC4_IN4 
+    PB12     ------> ADC4_IN3
+    PB14     ------> ADC4_IN4
+    PB15     ------> ADC4_IN5 
     */
-    HAL_GPIO_DeInit(VT1_GPIO_Port, VT1_Pin);
+    HAL_GPIO_DeInit(GPIOB, VT1_Pin|VT2_Pin|VT3_Pin);
 
     /* ADC4 DMA DeInit */
     HAL_DMA_DeInit(adcHandle->DMA_Handle);
@@ -641,18 +856,23 @@ static inline void ConvCpltEither (ADC_HandleTypeDef* hadc, int dma_buff_index_b
     // ADC4 (buff[3]) : V1, V1, V1, V1
     //
     for (int i=0; i<SEQS_PER_HALF; i++) {
-      process_VI_pair(adc_dma_buff[3][i*CHANNELS_PER_SEQ+dma_buff_index_base],  // V for Ch0 (CT1)
-		      adc_dma_buff[0][i*CHANNELS_PER_SEQ+dma_buff_index_base],  // I for Ch0 (CT1)
-		      0);                                                       // Chan num
-      process_VI_pair(adc_dma_buff[3][i*CHANNELS_PER_SEQ+dma_buff_index_base],  // V for Ch1 (CT2)
-		      adc_dma_buff[1][i*CHANNELS_PER_SEQ+dma_buff_index_base],  // I for Ch1 (CT2)
-		      1);                                                       // Chan num
-      process_VI_pair(adc_dma_buff[3][i*CHANNELS_PER_SEQ+dma_buff_index_base],  // V for Ch2 (CT3)
-		      adc_dma_buff[2][i*CHANNELS_PER_SEQ+dma_buff_index_base],  // I for Ch2 (CT3)
-		      2);                                                       // Chan num
-      process_VI_pair(adc_dma_buff[3][i*CHANNELS_PER_SEQ+1+dma_buff_index_base],// V for Ch3 (CT4)
-		      adc_dma_buff[1][i*CHANNELS_PER_SEQ+1+dma_buff_index_base],// I for Ch3 (CT4)
-		      3);                                                       // Chan num
+      //
+      // Process the first three slots which are fully populated
+      //
+      int chan = 0;
+      for (int slot=0; slot<3; slot++)
+	for (int adc=0; adc<3; adc++)
+	  process_VI_pair(adc_dma_buff[3][i*CHANNELS_PER_SEQ+slot+dma_buff_index_base],  // V
+			  adc_dma_buff[adc][i*CHANNELS_PER_SEQ+slot+dma_buff_index_base],  // I
+			  chan++);
+      //
+      // Process the last three slots which are half populated
+      //
+      for (int slot=3; slot<6; slot++)
+	for (int adc=0; adc<2; adc++)
+	  process_VI_pair(adc_dma_buff[3][i*CHANNELS_PER_SEQ+slot+dma_buff_index_base],  // V
+			  adc_dma_buff[adc][i*CHANNELS_PER_SEQ+slot+dma_buff_index_base],  // I
+			  chan++);
     }
 
     HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
@@ -705,7 +925,7 @@ void start_ADCs (int32_t usec_lag) {
   HAL_ADC_Stop_DMA(&hadc2);
   HAL_ADC_Stop_DMA(&hadc3);
   HAL_ADC_Stop_DMA(&hadc4);
-
+  
   if (usec_lag == 0) {
     //
     // Caller has requested no lag so set them all to the same edge.
@@ -780,11 +1000,11 @@ void start_ADCs (int32_t usec_lag) {
 // dma buffer we sample them from.
 //
 int get_cpu_temp () {
-  return (COMPUTATION_TEMPERATURE(adc_dma_buff[0][1]));
+  return (COMPUTATION_TEMPERATURE(adc_dma_buff[0][6]));
 }
 
 int get_vdd () {
-  return (3300 * *VREF_CAL_ADDR / adc_dma_buff[2][1]);
+  return (3300 * *VREF_CAL_ADDR / adc_dma_buff[2][3]);
 }
 
 //

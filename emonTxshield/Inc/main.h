@@ -55,22 +55,26 @@
 
 #define B1_Pin GPIO_PIN_13
 #define B1_GPIO_Port GPIOC
-#define CT1_4_Pin GPIO_PIN_1
-#define CT1_4_GPIO_Port GPIOC
-#define CT1_1_Pin GPIO_PIN_1
-#define CT1_1_GPIO_Port GPIOA
+#define ADC2_IN7_Pin GPIO_PIN_1
+#define ADC2_IN7_GPIO_Port GPIOC
+#define ADC1_IN2_Pin GPIO_PIN_1
+#define ADC1_IN2_GPIO_Port GPIOA
 #define USART_TX_Pin GPIO_PIN_2
 #define USART_TX_GPIO_Port GPIOA
 #define USART_RX_Pin GPIO_PIN_3
 #define USART_RX_GPIO_Port GPIOA
-#define CT1_2_Pin GPIO_PIN_4
-#define CT1_2_GPIO_Port GPIOA
+#define ADC2_IN1_Pin GPIO_PIN_4
+#define ADC2_IN1_GPIO_Port GPIOA
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
-#define CT1_3_Pin GPIO_PIN_0
-#define CT1_3_GPIO_Port GPIOB
-#define VT1_Pin GPIO_PIN_14
+#define ADC3_IN12_Pin GPIO_PIN_0
+#define ADC3_IN12_GPIO_Port GPIOB
+#define VT1_Pin GPIO_PIN_12
 #define VT1_GPIO_Port GPIOB
+#define VT2_Pin GPIO_PIN_14
+#define VT2_GPIO_Port GPIOB
+#define VT3_Pin GPIO_PIN_15
+#define VT3_GPIO_Port GPIOB
 #define ADC_TRIG_Pin GPIO_PIN_7
 #define ADC_TRIG_GPIO_Port GPIOC
 #define TMS_Pin GPIO_PIN_13
@@ -94,7 +98,7 @@
 #define MAX_ADC 4
 #define SEQS_PER_FULL 200                  // 200 sequences in the fullbuffer
 #define SEQS_PER_HALF (SEQS_PER_FULL/2)
-#define CHANNELS_PER_SEQ 2
+#define CHANNELS_PER_SEQ 7
 #define ADC_DMA_BUFFSIZE (CHANNELS_PER_SEQ*SEQS_PER_FULL)
 
 
