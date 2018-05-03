@@ -921,7 +921,6 @@ void calibrate_ADCs (void) {
 //
 void start_ADCs (int32_t usec_lag) {
 
-
   snprintf(log_buffer, sizeof(log_buffer),
 	   "ADC DMA buffs: %d bytes\n", sizeof(adc_dma_buff));
   debug_printf(log_buffer);

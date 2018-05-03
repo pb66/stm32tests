@@ -466,22 +466,16 @@ uint8_t onewire_reset (int bus) {
   HAL_HalfDuplex_Init(huart);
   HAL_UART_Receive(huart, (uint8_t*)rx_buff[bus], MAX_1WIRE_DMA, 0);  // Flush all outstanding rx bytes
 
-  rx_buff[bus][0] = tx_buff[bus][0] = ONE_WIRE_RESET_PULSE;
+  tx_buff[bus][0] = ONE_WIRE_RESET_PULSE;
   tx_busy[bus] = true;
 
   //
-  // Every once in a while we get a timeout return on the HAL_UART_Receive() call
-  // below.  5 msecs should be plenty long enough to receive 1 byte at 9600 baud
-  // and increasing that timeout doesn't help.  It may be that the UART is not liking
-  // the alignment of the slave's presence pulse?  XXX - needs further investigation, but for
-  // now letting it retry fixes it.   Max retries is conservatively set to 5, but 2 is sufficient.
+  // Because of the uart reset just above (to change the baud rate), the tx path doesn't
+  // become ready for 1 byte time (~1 msec) so the read back needs to wait sufficiently
+  // long for the transmit to happen.
   //
-  int i;
-  for (i=0; i<5; i++) {
-    HAL_UART_Transmit_DMA(huart, tx_buff[bus], 1);
-    if (HAL_UART_Receive(huart, (uint8_t*)rx_buff[bus], 1, 5) == HAL_OK)
-      break;
-  }
+  HAL_UART_Transmit_DMA(huart, tx_buff[bus], 1);
+  HAL_UART_Receive(huart, (uint8_t*)rx_buff[bus], 1, 5);    // 1 byte, 5 msecs timeout
 
   huart->Init.BaudRate = 115200;
   HAL_HalfDuplex_Init(huart);
