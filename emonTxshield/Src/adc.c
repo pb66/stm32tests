@@ -83,7 +83,7 @@ void MX_ADC1_Init(void)
     /**Common config 
     */
   hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV1;
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
   hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;
   hadc1.Init.ContinuousConvMode = ENABLE;
@@ -185,7 +185,7 @@ void MX_ADC2_Init(void)
     /**Common config 
     */
   hadc2.Instance = ADC2;
-  hadc2.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV1;
+  hadc2.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
   hadc2.Init.Resolution = ADC_RESOLUTION_12B;
   hadc2.Init.ScanConvMode = ADC_SCAN_ENABLE;
   hadc2.Init.ContinuousConvMode = ENABLE;
@@ -205,12 +205,21 @@ void MX_ADC2_Init(void)
 
     /**Configure Regular Channel 
     */
-  sConfig.Channel = ADC_CHANNEL_3;
+  sConfig.Channel = ADC_CHANNEL_1;
   sConfig.Rank = ADC_REGULAR_RANK_1;
   sConfig.SingleDiff = ADC_SINGLE_ENDED;
-  sConfig.SamplingTime = ADC_SAMPLETIME_601CYCLES_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
   sConfig.OffsetNumber = ADC_OFFSET_NONE;
   sConfig.Offset = 0;
+  if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+    /**Configure Regular Channel 
+    */
+  sConfig.Channel = ADC_CHANNEL_3;
+  sConfig.SamplingTime = ADC_SAMPLETIME_601CYCLES_5;
   if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
@@ -279,7 +288,7 @@ void MX_ADC3_Init(void)
     /**Common config 
     */
   hadc3.Instance = ADC3;
-  hadc3.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV1;
+  hadc3.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
   hadc3.Init.Resolution = ADC_RESOLUTION_12B;
   hadc3.Init.ScanConvMode = ADC_SCAN_ENABLE;
   hadc3.Init.ContinuousConvMode = ENABLE;
@@ -378,7 +387,7 @@ void MX_ADC4_Init(void)
     /**Common config 
     */
   hadc4.Instance = ADC4;
-  hadc4.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV1;
+  hadc4.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
   hadc4.Init.Resolution = ADC_RESOLUTION_12B;
   hadc4.Init.ScanConvMode = ADC_SCAN_ENABLE;
   hadc4.Init.ContinuousConvMode = ENABLE;
@@ -844,16 +853,17 @@ static inline void ConvCpltEither (ADC_HandleTypeDef* hadc, int dma_buff_index_b
 
     //
     // Knowing which value to get from where in the DMA buffer is all about
-    // knowing how the ADC sequence slots have been configured.  In this case all
-    // four have been configured for just two channels per sequence.  To
-    // further complicate things, channels mostly correspond with CTs (apart from
-    // the internal channels Temp and Vref) but channels are numbered from 0, while
-    // CTs are numbered from 1.  Our sequence is defined as follows:
+    // knowing how the ADC sequence slots have been configured.  In this example
+    // all ADCs have been configured with 7 slots as follows:
     //
-    // ADC1 (buff[0]) : CT1, Temp, CT1, Temp, CT1, Temp...
-    // ADC2 (buff[1]) : CT2, CT4, CT2, CT4....
-    // ADC3 (buff[2]) : CT3, Vref, CT3, Vref....
-    // ADC4 (buff[3]) : V1, V1, V1, V1
+    //  slot     ADC1      ADC2      ADC3      ADC4
+    //    1      ch0       ch1       ch2       V1
+    //    2      ch3(CT1)  ch4(CT2)  ch5(CT3)  V2
+    //    3      ch6       ch7       ch8       V3
+    //    4      ch9       ch10      Vref      V1
+    //    5      ch11      ch12(CT4) fill      V2
+    //    6      ch13      ch14      fill      V3
+    //    7      Temp      fill      fill      V1
     //
     for (int i=0; i<SEQS_PER_HALF; i++) {
       //
@@ -913,7 +923,7 @@ void start_ADCs (int32_t usec_lag) {
 
 
   snprintf(log_buffer, sizeof(log_buffer),
-	   "DMA buffs: %d bytes\n", sizeof(adc_dma_buff));
+	   "ADC DMA buffs: %d bytes\n", sizeof(adc_dma_buff));
   debug_printf(log_buffer);
   
   //

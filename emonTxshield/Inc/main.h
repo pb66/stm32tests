@@ -69,6 +69,8 @@
 #define LD2_GPIO_Port GPIOA
 #define ADC3_IN12_Pin GPIO_PIN_0
 #define ADC3_IN12_GPIO_Port GPIOB
+#define OneWire_2_Pin GPIO_PIN_10
+#define OneWire_2_GPIO_Port GPIOB
 #define VT1_Pin GPIO_PIN_12
 #define VT1_GPIO_Port GPIOB
 #define VT2_Pin GPIO_PIN_14
@@ -77,6 +79,8 @@
 #define VT3_GPIO_Port GPIOB
 #define ADC_TRIG_Pin GPIO_PIN_7
 #define ADC_TRIG_GPIO_Port GPIOC
+#define OneWire_1_Pin GPIO_PIN_9
+#define OneWire_1_GPIO_Port GPIOA
 #define TMS_Pin GPIO_PIN_13
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
@@ -94,6 +98,7 @@
 /* USER CODE BEGIN Private defines */
 
 #define MAX_LOG_BUFFER 200
+#define MAX_1WIRE_BUS 2
 
 #define MAX_ADC 4
 #define SEQS_PER_FULL 200                  // 200 sequences in the fullbuffer

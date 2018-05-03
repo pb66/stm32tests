@@ -2,7 +2,7 @@
 // Change these all to 1.0 if you want raw A/D units
 //
 
-#define CALIBRATED 1
+#define RAW 1
 
 #ifdef CALIBRATED
 const float VCAL[MAX_CHANNELS] = {
@@ -45,4 +45,5 @@ const float ICAL[MAX_CHANNELS] = {
 #endif
 
 
-const int ADC_LAG = 269;             // ~4.8 degrees
+// const int ADC_LAG = 269;             // ~4.8 degrees
+const int ADC_LAG = 0;             // 0 degrees

@@ -3,7 +3,7 @@
 #define MAX_CHANNELS 15
 
 #define LINE_FREQ 50                     // Hz
-#define SAMPLE_PERIOD  60                // usecs - see ADC config
+#define SAMPLE_PERIOD  119               // usecs - see ADC config
 #define REPORTING_INTVL 10               // seconds
 #define SAMPLES_PER_INTVL (REPORTING_INTVL * 1000000 / SAMPLE_PERIOD)  // 147058
 
